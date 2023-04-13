@@ -27,8 +27,16 @@ jobs:
         cd Humongous.Healthcare.Web
         dotnet build --configuration Release
 
-    - name: Publish with dotnet
-      run: |
-        cd Humongous.Healthcare.Web
-        dotnet publish --configuration Release --output $(Build.ArtifactStagingDirectory)
+    - name: Install Nuget
+      uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '5.3.x'
+    - name: NuGet to restore dependencies as well as project-specific tools that are specified in the project file
+      run: nuget restore
+  
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
 
+    - name: Run MSBuild
+      run: msbuild .\Humongous.Healthcare.Web\Humongous.Healthcare.Web.csproj
+      
